@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="en" data-type="software" data-ground="sky" data-radius="sharp" data-buttons="tonal" data-motion="snap">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f8a78">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
+  <title>AI Chat - Terminal Interface</title>
+  <meta name="description" content="A terminal-glass chat interface for Google Gemini, Groq, and OpenAI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal-fallback: #0f8a78;
+      --panel: rgba(8, 40, 38, 0.58);
+      --panel-strong: rgba(6, 35, 34, 0.76);
+      --border: rgba(220, 235, 225, 0.25);
+      --border-bright: rgba(245, 213, 176, 0.58);
+      --text: #d8e8e0;
+      --muted: #8fb0a5;
+      --cream: #f5d5b0;
+      --accent: #057762;
+      --cyan-glass: rgba(98, 189, 174, 0.14);
+      --cream-glass: rgba(245, 213, 176, 0.16);
+      --blur: 14px;
+      --radius: 7px;
+      --font-mono: "JetBrains Mono", "Fira Code", monospace;
+    }
+
+    .provider-select {
+      width: 100%;
+      height: 42px;
+      margin: 0 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0 10px;
+      background: rgba(4, 38, 36, 0.8);
+      color: var(--text);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+
+    body {
+      overflow: hidden;
+      color: var(--text);
+      font-family: var(--font-mono);
+      background:
+        linear-gradient(rgba(9, 79, 75, 0.08), rgba(5, 38, 36, 0.18)),
+        url("wallpaper.jpg") center / cover fixed no-repeat,
+        var(--teal-fallback);
+    }
+
+    button, textarea, input { font: inherit; }
+    button { color: inherit; }
+
+    .app {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 54px minmax(0, 1fr) 118px;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .status-bar {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-left,
+    .status-right,
+    .workspace,
+    .brand-pill,
+    .pill {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      box-shadow: 0 8px 24px rgba(3, 28, 27, 0.14);
+    }
+
+    .status-left {
+      justify-self: start;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .status-right {
+      justify-self: end;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .status-actions {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-self: end;
+      gap: 6px;
+    }
+
+    .workspace { height: 32px; padding: 3px; gap: 2px; }
+    .workspace button {
+      min-width: 28px;
+      height: 24px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      font-size: 11px;
+      cursor: default;
+    }
+    .workspace button.active { background: var(--cream); color: #17312e; font-weight: 700; }
+
+    .brand-pill {
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .provider-indicator {
+      border: 0;
+      border-left: 1px solid var(--border);
+      padding: 0 0 0 9px;
+      background: transparent;
+      color: var(--cream);
+      font: inherit;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .provider-indicator:hover { color: var(--text); }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(5, 119, 98, 0.75);
+    }
+
+    .pill {
+      min-height: 32px;
+      height: 32px;
+      padding: 0 10px;
+      gap: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    button.pill { cursor: pointer; transition: border-color 140ms ease, background 140ms ease, color 140ms ease; }
+    button.pill:hover { border-color: var(--border-bright); background: rgba(245, 213, 176, 0.12); }
+
+    .clock { min-width: 112px; justify-content: center; font-variant-numeric: tabular-nums; }
+    .clock-pill { width: 118px; }
+
+    .visualizer {
+      width: 44px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .visualizer i {
+      display: block;
+      width: 3px;
+      height: 6px;
+      border-radius: 2px;
+      background: var(--cream);
+      opacity: 0.62;
+      transform-origin: center;
+    }
+
+    .visualizer.playing i {
+      animation: equalize 680ms ease-in-out infinite alternate;
+      opacity: 1;
+    }
+
+    .visualizer.playing i:nth-child(2n) { animation-delay: 180ms; }
+    .visualizer.playing i:nth-child(3n) { animation-delay: 340ms; }
+
+    .main-grid {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr) 310px;
+      gap: 10px;
+    }
+
+    .main-grid.parameters-collapsed {
+      grid-template-columns: 230px minmax(0, 1fr);
+    }
+
+    .panel {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      box-shadow: 0 18px 42px rgba(3, 28, 27, 0.16);
+    }
+
+    .panel-label {
+      position: absolute;
+      z-index: 3;
+      top: -9px;
+      left: 12px;
+      padding: 0 7px;
+      background: #0d4a43;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 16px;
+      letter-spacing: 0.08em;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 15px 10px 10px;
+      transition: transform 180ms ease;
+    }
+
+    .new-chat {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: rgba(245, 213, 176, 0.1);
+      color: var(--cream);
+      text-align: left;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+    .new-chat:hover { border-color: var(--border-bright); background: rgba(245, 213, 176, 0.16); }
+
+    .chat-list {
+      display: grid;
+      gap: 3px;
+      margin-top: 12px;
+    }
+    .chat-entry {
+      width: 100%;
+      height: 36px;
+      border: 0;
+      border-left: 2px solid transparent;
+      border-radius: 3px;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 0 9px;
+      cursor: pointer;
+      transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+    .chat-entry:hover { color: var(--text); background: rgba(220, 235, 225, 0.06); }
+    .chat-entry.active {
+      border-left-color: var(--accent);
+      background: rgba(5, 119, 98, 0.09);
+      color: var(--cream);
+    }
+
+    .chat-panel {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .chat-panel > .panel-label {
+      top: 6px;
+    }
+    .chat-parameters-toggle {
+      position: absolute;
+      z-index: 4;
+      top: 4px;
+      right: 11px;
+      display: none;
+    }
+    .main-grid.parameters-collapsed .chat-parameters-toggle { display: grid; }
+
+    .message-list {
+      width: 100%;
+      min-height: 0;
+      min-width: 0;
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 33px 18px 14px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--cream) transparent;
+    }
+    .message-list::-webkit-scrollbar { width: 7px; }
+    .message-list::-webkit-scrollbar-track { background: transparent; }
+    .message-list::-webkit-scrollbar-thumb { background: var(--cream); border: 2px solid transparent; background-clip: padding-box; }
+
+    .message-row {
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+      min-width: 0;
+      max-width: min(78%, 700px);
+      margin-bottom: 13px;
+      animation: message-in 220ms ease-out both;
+    }
+    .message-row.user { margin-left: auto; align-items: flex-end; }
+    .message-row.bot { margin-right: auto; align-items: flex-start; }
+    .message-row.error { margin-right: auto; align-items: flex-start; }
+
+    .speaker {
+      margin: 0 7px 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .message-row.user .speaker { color: #c9a98a; }
+    .message-row.error .speaker { color: var(--cream); }
+
+    .bubble {
+      min-width: 90px;
+      width: fit-content;
+      max-width: 100%;
+      padding: 10px 13px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      box-shadow: 0 8px 20px rgba(3, 28, 27, 0.12);
+    }
+    .bubble p { margin: 0; white-space: pre-wrap; }
+    .bubble code { font-family: var(--font-mono); }
+    .bubble pre {
+      margin: 8px 0 0;
+      min-width: 0;
+      max-width: 100%;
+      padding: 11px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--cream);
+      border-radius: 4px;
+      background: rgba(3, 29, 28, 0.7);
+      white-space: pre;
+    }
+
+    .message-row.bot .bubble { background: var(--cyan-glass); border-color: rgba(98, 189, 174, 0.32); }
+    .message-row.user .bubble { background: var(--cream-glass); border-color: rgba(245, 213, 176, 0.32); color: #fff7e9; }
+    .message-row.error .bubble { background: rgba(5, 119, 98, 0.12); border-color: rgba(5, 119, 98, 0.42); color: var(--text); }
+
+    .bot-meta {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 7px 4px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .model-badge {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--cream);
+    }
+    .bot-stats {
+      width: 100%;
+      margin: 5px 7px 0;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .bot-actions {
+      display: flex;
+      gap: 7px;
+      margin: 5px 4px 0;
+    }
+    .bot-actions button {
+      min-height: 25px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      background: rgba(8, 40, 38, 0.38);
+      color: var(--muted);
+      font-size: 9px;
+      cursor: pointer;
+    }
+    .bot-actions button:hover:not(:disabled) {
+      border-color: var(--border-bright);
+      color: var(--cream);
+    }
+    .bot-actions button:disabled { opacity: 0.45; cursor: default; }
+
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin: 2px 0 12px 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .typing-cursor {
+      width: 8px;
+      height: 15px;
+      background: var(--cream);
+      animation: blink 850ms steps(1, end) infinite;
+    }
+
+    .input-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px;
+      align-items: center;
+      gap: 10px;
+      padding: 19px 12px 10px;
+    }
+
+    .input-shell {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: rgba(4, 38, 36, 0.44);
+    }
+    #messageInput {
+      width: 100%;
+      max-height: 84px;
+      resize: none;
+      overflow-y: auto;
+      border: 0;
+      outline: 0;
+      padding: 6px 14px;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 20px;
+    }
+    #messageInput::placeholder { color: var(--muted); }
+
+    .send-button {
+      height: 64px;
+      border: 1px solid rgba(5, 119, 98, 0.75);
+      border-radius: 6px;
+      background: rgba(5, 119, 98, 0.82);
+      color: #fff4ed;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+    .send-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--cream);
+      background: #057762;
+    }
+    .send-button:active:not(:disabled) { transform: translateY(0); }
+    .send-button:disabled { opacity: 0.42; cursor: not-allowed; }
+    .stop-button {
+      display: block;
+      height: 64px;
+      border: 1px solid var(--border-bright);
+      border-radius: 6px;
+      background: rgba(6, 35, 34, 0.8);
+      color: var(--cream);
+      cursor: pointer;
+    }
+    .stop-button[hidden] { display: none; }
+    .stop-button:hover { border-color: var(--accent); color: var(--cream); }
+    .stop-button.visible { display: block; }
+
+    .clear-chat {
+      height: 38px;
+      margin-top: auto;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .clear-chat:hover { border-color: var(--border-bright); color: var(--cream); }
+
+    .mobile-toggle { display: none; }
+    .parameters-toggle { display: none; }
+    .volume-slider {
+      width: 78px;
+      height: 32px;
+      padding: 0 7px;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      accent-color: var(--cream);
+      cursor: pointer;
+    }
+    .music-note {
+      display: none;
+      position: absolute;
+      right: 196px;
+      top: 48px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--panel-strong);
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .music-note.show { display: block; }
+
+    .key-modal {
+      width: min(430px, calc(100vw - 28px));
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius);
+      padding: 0;
+      background: rgba(6, 35, 34, 0.94);
+      color: var(--text);
+      box-shadow: 0 24px 70px rgba(3, 28, 27, 0.42);
+    }
+    .key-modal::backdrop {
+      background: rgba(4, 31, 30, 0.48);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .key-modal-inner { padding: 20px; }
+    .key-modal h2 {
+      margin: 0 0 8px;
+      color: var(--cream);
+      font-size: 18px;
+    }
+    .key-modal p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .key-modal label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+    #apiKeyInput {
+      width: 100%;
+      height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      outline: 0;
+      padding: 0 12px;
+      background: rgba(220, 235, 225, 0.08);
+      color: var(--text);
+    }
+    .key-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .key-actions button {
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .key-actions .save-key { background: rgba(245, 213, 176, 0.16); color: var(--cream); }
+    .key-actions .confirm-remove {
+      border-color: rgba(5, 119, 98, 0.55);
+      background: rgba(5, 119, 98, 0.14);
+      color: var(--cream);
+    }
+    .key-actions .confirm-remove:hover {
+      border-color: var(--accent);
+      background: rgba(5, 119, 98, 0.24);
+    }
+    .key-actions button:hover { border-color: var(--border-bright); }
+    .key-error { min-height: 15px; margin-top: 8px; color: var(--text); font-size: 10px; }
+
+    .parameters-panel {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 9px 9px;
+      transition: width 180ms ease, transform 180ms ease;
+    }
+    .parameters-panel [hidden] { display: none !important; }
+    .parameters-panel > .panel-label {
+      position: static;
+      z-index: auto;
+      width: fit-content;
+      margin-left: 7px;
+      padding: 0 7px;
+      background: #0d4a43;
+      color: var(--muted);
+      line-height: 16px;
+      letter-spacing: 0.08em;
+    }
+    .parameters-head {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin: 1px 0 7px;
+    }
+    .parameters-active-model {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--cream);
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .parameters-collapse {
+      flex: 0 0 28px;
+      width: 28px;
+      height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .parameters-collapse:hover { border-color: var(--border-bright); color: var(--cream); }
+    .parameters-content {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--cream) transparent;
+    }
+    .parameters-content::-webkit-scrollbar { width: 6px; }
+    .parameters-content::-webkit-scrollbar-thumb { background: var(--cream); border: 2px solid transparent; background-clip: padding-box; }
+    .parameter-control {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .parameter-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+      color: var(--text);
+      font-size: 10px;
+    }
+    .parameter-value { color: var(--cream); font-variant-numeric: tabular-nums; }
+    .parameter-help {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+    .parameter-control select,
+    .parameter-control input[type="text"],
+    .parameter-control input[type="number"],
+    .parameter-control textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 7px 8px;
+      background: rgba(4, 38, 36, 0.7);
+      color: var(--text);
+      font-size: 10px;
+    }
+    .parameter-control select { height: 32px; }
+    .parameter-control textarea { min-height: 62px; resize: vertical; line-height: 1.45; }
+    .parameter-control input[type="number"] { height: 30px; }
+    .parameter-control input[type="range"] {
+      width: 100%;
+      height: 16px;
+      margin: 0;
+      appearance: none;
+      background: transparent;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .parameter-control input[type="range"]::-webkit-slider-runnable-track {
+      height: 3px;
+      border-radius: 0;
+      background: var(--cream);
+    }
+    .parameter-control input[type="range"]::-moz-range-track {
+      height: 3px;
+      border-radius: 0;
+      background: var(--cream);
+    }
+    .parameter-control input[type="range"]::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+      margin-top: -4px;
+      appearance: none;
+      border: 1px solid var(--cream);
+      border-radius: 2px;
+      background: var(--accent);
+    }
+    .parameter-control input[type="range"]::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--cream);
+      border-radius: 2px;
+      background: var(--accent);
+    }
+    .range-row { display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 8px; }
+    .range-row.single { grid-template-columns: minmax(0, 1fr) 44px; }
+    .toggle-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 34px;
+      padding: 5px 0;
+      border-top: 1px solid rgba(220, 235, 225, 0.1);
+      color: var(--text);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .toggle-control > span:first-child { display: grid; gap: 2px; }
+    .toggle-control small { color: var(--muted); font-size: 9px; font-weight: 400; }
+    .toggle-switch { position: relative; flex: 0 0 34px; width: 34px; height: 18px; }
+    .toggle-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+    .toggle-switch span {
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: rgba(4, 38, 36, 0.8);
+      pointer-events: none;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+    .toggle-switch span::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      background: var(--muted);
+      transition: transform 140ms ease, background 140ms ease;
+    }
+    .toggle-switch input:checked + span { border-color: var(--accent); background: rgba(5, 119, 98, 0.25); }
+    .toggle-switch input:checked + span::after { transform: translateX(16px); background: var(--accent); }
+    .toggle-switch input:focus-visible + span { outline: 2px solid var(--cream); outline-offset: 2px; }
+    .reset-parameters {
+      width: 100%;
+      min-height: 32px;
+      margin: 4px 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: rgba(245, 213, 176, 0.08);
+      color: var(--cream);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .reset-parameters:hover { border-color: var(--border-bright); background: rgba(245, 213, 176, 0.14); }
+    .session-stats {
+      border-top: 1px solid var(--border);
+      padding-top: 9px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.65;
+    }
+    .session-stats strong { color: var(--text); font-weight: 500; }
+    .session-stats button {
+      min-height: 24px;
+      margin-top: 5px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      cursor: pointer;
+    }
+    .session-stats button:hover { border-color: var(--border-bright); color: var(--cream); }
+    .session-stats button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .main-grid.parameters-collapsed #parametersPanel { display: none; }
+
+    button:focus-visible, textarea:focus-visible, input:focus-visible {
+      outline: 2px solid var(--cream);
+      outline-offset: 2px;
+    }
+
+    @keyframes message-in {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink { 50% { opacity: 0.12; } }
+    @keyframes equalize {
+      from { height: 5px; }
+      to { height: 22px; }
+    }
+
+    @media (max-width: 980px) and (min-width: 761px) {
+      .main-grid { grid-template-columns: 180px minmax(0, 1fr) 285px; }
+      .main-grid.parameters-collapsed { grid-template-columns: 180px minmax(0, 1fr); }
+      .app { gap: 8px; padding: 8px; }
+    }
+
+    @media (max-width: 760px) {
+      .app { grid-template-rows: 54px minmax(0, 1fr) 104px; gap: 7px; padding: 7px; }
+      .status-bar { grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
+      .status-left { display: none; }
+      .status-right { gap: 2px; }
+      .brand-pill { min-width: 0; width: 100%; padding: 0 9px; }
+      .volume-slider { width: 62px; }
+      .visualizer { width: 34px; }
+      .mobile-toggle { display: grid; }
+      .parameters-toggle { display: grid; }
+      .chat-parameters-toggle { display: none; }
+      .main-grid { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        z-index: 20;
+        left: 7px;
+        top: 68px;
+        bottom: 111px;
+        width: 220px;
+        transform: translateX(-236px);
+        background: rgba(6, 35, 34, 0.94);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .parameters-panel {
+        position: fixed;
+        z-index: 22;
+        top: 66px;
+        right: 7px;
+        bottom: 111px;
+        width: min(360px, calc(100vw - 18px));
+        transform: translateX(calc(100% + 16px));
+        background: rgba(6, 35, 34, 0.96);
+      }
+      .parameters-panel.mobile-open { transform: translateX(0); }
+      .message-list { padding: 30px 10px 10px; }
+      .message-row { max-width: 92%; }
+      .bubble { font-size: 12px; }
+      .input-panel { grid-template-columns: minmax(0, 1fr) 82px; gap: 7px; padding: 16px 8px 8px; }
+      .input-shell { height: auto; min-height: 36px; }
+      .send-button { height: 58px; min-height: 58px; }
+      .stop-button { height: 58px; }
+      #messageInput { padding: 6px 10px; }
+      .music-note { right: 8px; top: 48px; }
+    }
+
+    @media (max-width: 360px) {
+      .status-bar { gap: 4px; }
+      .status-actions { gap: 2px; }
+      .status-right { gap: 1px; padding: 2px; }
+      .visualizer { width: 22px; }
+      .mobile-toggle,
+      .parameters-toggle {
+        width: 25px;
+        min-width: 25px;
+        padding: 0;
+        justify-content: center;
+      }
+      .volume-slider { width: 38px; padding: 0 2px; }
+      #musicToggle { width: 28px; min-width: 28px; padding: 0; justify-content: center; }
+      #openSettings { width: 28px; min-width: 28px; padding: 0; overflow: hidden; font-size: 0; }
+      #openSettings::before { content: "⚙"; font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HTML structure -->
+  <main class="app" id="top">
+    <header class="status-bar" aria-label="Status bar">
+      <div class="status-left">
+        <div class="pill clock-pill clock" id="clock">00:00:00</div>
+        <nav class="workspace" aria-label="Workspaces">
+          <button class="active" type="button" data-workspace="A" aria-current="page">A</button>
+          <button type="button" data-workspace="B">B</button>
+          <button type="button" data-workspace="C">C</button>
+          <button type="button" data-workspace="D">D</button>
+          <button type="button" data-workspace="E">E</button>
+        </nav>
+      </div>
+
+      <div class="brand-pill">
+        <span class="status-dot"></span>
+        <span>Terminal Chat</span>
+        <button class="provider-indicator" id="providerIndicator" type="button" aria-label="Switch active provider">Gemini</button>
+      </div>
+
+      <div class="status-actions">
+        <div class="visualizer" id="visualizer" aria-label="Music visualizer" role="img">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="status-right">
+          <button class="pill mobile-toggle" id="sidebarToggle" type="button" aria-label="Toggle library" aria-expanded="false">≡</button>
+          <button class="pill parameters-toggle" id="parametersToggle" type="button" aria-label="Open parameters" aria-controls="parametersPanel" aria-expanded="false">⋮</button>
+          <input class="pill volume-slider" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.58" aria-label="Music volume">
+          <button class="pill" id="musicToggle" type="button" aria-label="Play music" aria-pressed="false">▶</button>
+          <button class="pill" id="openSettings" type="button" aria-label="Open API key settings">⚙ key</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="main-grid" aria-label="Chat workspace">
+      <aside class="panel sidebar" id="sidebar">
+        <span class="panel-label">Library</span>
+        <button class="new-chat" id="newChat" type="button">+ New</button>
+        <nav class="chat-list" aria-label="Past chats">
+          <button class="chat-entry active" type="button">new chat</button>
+        </nav>
+        <button class="clear-chat" id="clearChat" type="button">Clear chat</button>
+      </aside>
+
+      <section class="panel chat-panel" aria-label="Chat messages">
+        <span class="panel-label">Chat</span>
+        <button class="parameters-collapse chat-parameters-toggle" id="expandParameters" type="button" aria-controls="parametersPanel" aria-expanded="false" aria-label="Expand parameters" title="Expand parameters">+</button>
+        <div class="message-list" id="messageList" role="log" aria-live="polite" aria-relevant="additions"></div>
+      </section>
+
+      <fieldset class="panel parameters-panel" id="parametersPanel" aria-label="Generation parameters">
+        <legend class="panel-label">Parameters</legend>
+        <div class="parameters-head">
+          <span class="parameters-active-model" id="activeModelLabel">gemini-3.8-flash</span>
+          <button class="parameters-collapse" id="collapseParameters" type="button" aria-controls="parametersPanel" aria-expanded="true" aria-label="Collapse parameters" title="Collapse parameters">−</button>
+        </div>
+        <div class="parameters-content" id="parametersContent">
+          <div class="parameter-control">
+            <label class="parameter-label" for="modelSelect">Model</label>
+            <select id="modelSelect"></select>
+            <input id="customModel" type="text" placeholder="Custom model ID" aria-label="Custom model ID" hidden>
+            <small class="parameter-help">Choose a model or enter a provider model ID.</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="systemPrompt">System prompt</label>
+            <textarea id="systemPrompt" rows="3" placeholder="Optional instructions for the assistant"></textarea>
+            <small class="parameter-help">Instructions prepended to the conversation.</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="temperatureRange">Temperature <output class="parameter-value" id="temperatureValue">1.00</output></label>
+            <div class="range-row">
+              <input id="temperatureRange" type="range" min="0" max="2" step="0.01" value="1" aria-label="Temperature slider">
+              <input id="temperatureNumber" type="number" min="0" max="2" step="0.01" value="1" aria-label="Temperature value">
+            </div>
+            <small class="parameter-help">Lower values are more focused; higher values are more varied.</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="maxTokensRange">Max completion tokens <output class="parameter-value" id="maxTokensValue">1024</output></label>
+            <div class="range-row">
+              <input id="maxTokensRange" type="range" min="1" max="8192" step="1" value="1024" aria-label="Maximum completion tokens slider">
+              <input id="maxTokensNumber" type="number" min="1" max="8192" step="1" value="1024" aria-label="Maximum completion tokens value">
+            </div>
+            <small class="parameter-help">Upper limit for generated tokens (1–8192).</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="topPRange">Top P</label>
+            <div class="range-row single">
+              <input id="topPRange" type="range" min="0" max="1" step="0.01" value="1" aria-label="Top P">
+              <span class="parameter-value" id="topPDisplay">1.00</span>
+            </div>
+            <small class="parameter-help">Nucleus sampling threshold.</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="stopSequences">Stop sequences</label>
+            <input id="stopSequences" type="text" placeholder="e.g. END, ###">
+            <small class="parameter-help">Comma-separated sequences that stop generation.</small>
+          </div>
+
+          <div class="parameter-control">
+            <label class="parameter-label" for="seedInput">Seed <span class="parameter-value">optional</span></label>
+            <input id="seedInput" type="number" step="1" placeholder="Random">
+            <small class="parameter-help">Best-effort reproducibility; blank uses a random seed.</small>
+          </div>
+
+          <label class="toggle-control" for="streamToggle">
+            <span>Stream <small>Show tokens as they arrive.</small></span>
+            <span class="toggle-switch"><input id="streamToggle" type="checkbox" checked><span></span></span>
+          </label>
+          <label class="toggle-control" for="jsonToggle">
+            <span>JSON mode <small>Request JSON-formatted output.</small></span>
+            <span class="toggle-switch"><input id="jsonToggle" type="checkbox"><span></span></span>
+          </label>
+
+          <div class="parameter-control" id="reasoningControl" hidden>
+            <label class="parameter-label" for="reasoningEffort">Reasoning effort</label>
+            <select id="reasoningEffort">
+              <option value="default">Default</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+            <small class="parameter-help">Sent only to supported Groq reasoning models.</small>
+          </div>
+
+          <button class="reset-parameters" id="resetParameters" type="button">Reset to defaults</button>
+          <section class="session-stats" aria-label="Session performance">
+            <strong>SESSION</strong>
+            <div>Requests <strong id="sessionRequests">0</strong></div>
+            <div>Avg latency <strong id="sessionLatency">—</strong></div>
+            <div>Avg speed <strong id="sessionSpeed">—</strong></div>
+            <div>Total tokens <strong id="sessionTokens">0</strong></div>
+            <button id="resetSessionStats" type="button">Reset stats</button>
+          </section>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="panel input-panel" aria-label="Message input">
+      <span class="panel-label">Input</span>
+      <div class="input-shell">
+        <label for="messageInput" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);">Chat message</label>
+        <textarea id="messageInput" rows="1" maxlength="4000" placeholder="type a message..."></textarea>
+      </div>
+      <button class="send-button" id="sendButton" type="button" disabled><span aria-hidden="true">➤</span> Send</button>
+      <button class="stop-button" id="stopButton" type="button" hidden>■ Stop</button>
+    </section>
+  </main>
+
+  <div class="music-note" id="musicNote" role="status"></div>
+  <audio id="audio" loop preload="metadata" src="music.mp3"></audio>
+
+  <dialog class="key-modal" id="keyModal">
+    <div class="key-modal-inner">
+      <h2>Enter API Key</h2>
+      <p>Your key is stored only in this browser (localStorage).</p>
+      <label for="providerSelect">AI PROVIDER</label>
+      <select class="provider-select" id="providerSelect">
+        <option value="gemini">Google Gemini</option>
+        <option value="groq">Groq</option>
+        <option value="openai">OpenAI</option>
+      </select>
+      <label for="apiKeyInput" id="apiKeyLabel">GEMINI API KEY</label>
+      <input id="apiKeyInput" type="password" autocomplete="off" placeholder="Paste API key">
+      <div class="key-error" id="keyError" role="alert"></div>
+      <div class="key-actions">
+        <button id="clearKey" type="button">Clear key</button>
+        <button class="save-key" id="saveKey" type="button">Save</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="key-modal" id="clearKeyModal" aria-labelledby="clearKeyTitle" aria-describedby="clearKeyDescription">
+    <div class="key-modal-inner">
+      <h2 id="clearKeyTitle">Clear API key?</h2>
+      <p id="clearKeyDescription">Remove the saved <span id="clearKeyProvider">Gemini</span> key from this browser? You will need to enter it again to use this provider.</p>
+      <div class="key-actions">
+        <button id="cancelClearKey" type="button">Cancel</button>
+        <button class="confirm-remove" id="confirmClearKey" type="button">Clear key</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // ============================================================
+    // JavaScript
+    // ============================================================
+    // Editable model catalog by provider.
+    const MODEL_OPTIONS = {
+      gemini: ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-pro-preview"],
+      groq: ["openai/gpt-oss-20b", "openai/gpt-oss-120b", "llama-3.1-8b-instant", "qwen/qwen3.8-27b"],
+      openai: ["gpt-4o-mini", "gpt-4.1-mini", "gpt-4.1"]
+    };
+    const DEFAULT_MODELS = {
+      gemini: "gemini-3.8-flash",
+      groq: "openai/gpt-oss-20b",
+      openai: "gpt-4o-mini"
+    };
+    const DEFAULT_GENERATION_SETTINGS = {
+      systemPrompt: "",
+      temperature: 1,
+      maxTokens: 1024,
+      topP: 1,
+      stopSequences: "",
+      seed: "",
+      stream: true,
+      jsonMode: false,
+      reasoningEffort: "default"
+    };
+    const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+    const OPENAI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+
+    const messageList = document.getElementById("messageList");
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const keyModal = document.getElementById("keyModal");
+    const clearKeyModal = document.getElementById("clearKeyModal");
+    const apiKeyInput = document.getElementById("apiKeyInput");
+    const keyError = document.getElementById("keyError");
+    const providerSelect = document.getElementById("providerSelect");
+    const apiKeyLabel = document.getElementById("apiKeyLabel");
+    const providerIndicator = document.getElementById("providerIndicator");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const parametersPanel = document.getElementById("parametersPanel");
+    const parametersToggle = document.getElementById("parametersToggle");
+    const mainGrid = document.querySelector(".main-grid");
+    const modelSelect = document.getElementById("modelSelect");
+    const customModelInput = document.getElementById("customModel");
+    const systemPromptInput = document.getElementById("systemPrompt");
+    const temperatureRange = document.getElementById("temperatureRange");
+    const temperatureNumber = document.getElementById("temperatureNumber");
+    const maxTokensRange = document.getElementById("maxTokensRange");
+    const maxTokensNumber = document.getElementById("maxTokensNumber");
+    const topPRange = document.getElementById("topPRange");
+    const stopSequencesInput = document.getElementById("stopSequences");
+    const seedInput = document.getElementById("seedInput");
+    const streamToggle = document.getElementById("streamToggle");
+    const jsonToggle = document.getElementById("jsonToggle");
+    const reasoningControl = document.getElementById("reasoningControl");
+    const reasoningSelect = document.getElementById("reasoningEffort");
+    const activeModelLabel = document.getElementById("activeModelLabel");
+    const stopButton = document.getElementById("stopButton");
+
+    let isWaiting = false;
+    let typingIndicator = null;
+    let history = [];
+    let activeWorkspace = "A";
+    let providerToClear = null;
+    let activeRequestController = null;
+    let activeRequestStartedAt = 0;
+    const settingsByProvider = {};
+    const sessionStats = {
+      requests: 0,
+      latencyMs: 0,
+      latencySamples: 0,
+      speed: 0,
+      speedSamples: 0,
+      tokens: 0
+    };
+    const chatSessions = {
+      A: [],
+      B: [],
+      C: [],
+      D: [],
+      E: []
+    };
+
+    function getProvider() {
+      const provider = localStorage.getItem("provider");
+      return provider === "groq" || provider === "openai" ? provider : "gemini";
+    }
+
+    function getSavedKey(provider = getProvider()) {
+      return localStorage.getItem(`${provider}_api_key`) || "";
+    }
+
+    function defaultSettings(provider) {
+      return {
+        ...DEFAULT_GENERATION_SETTINGS,
+        model: DEFAULT_MODELS[provider],
+        customModel: ""
+      };
+    }
+
+    function loadProviderSettings(provider) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(`generation_settings_${provider}`) || "{}");
+        const settings = { ...defaultSettings(provider), ...saved };
+        const clamp = (value, min, max, fallback, integer = false) => {
+          const number = Number(value);
+          if (!Number.isFinite(number)) return fallback;
+          const bounded = Math.min(max, Math.max(min, number));
+          return integer ? Math.round(bounded) : bounded;
+        };
+        settings.model = typeof settings.model === "string" ? settings.model : DEFAULT_MODELS[provider];
+        settings.customModel = typeof settings.customModel === "string" ? settings.customModel : "";
+        settings.systemPrompt = typeof settings.systemPrompt === "string" ? settings.systemPrompt : "";
+        settings.temperature = clamp(settings.temperature, 0, 2, 1);
+        settings.maxTokens = clamp(settings.maxTokens, 1, 8192, 1024, true);
+        settings.topP = clamp(settings.topP, 0, 1, 1);
+        settings.stopSequences = typeof settings.stopSequences === "string" ? settings.stopSequences : "";
+        settings.seed = settings.seed === "" || settings.seed === null || settings.seed === undefined
+          ? ""
+          : Number.isSafeInteger(Number(settings.seed)) ? String(Math.trunc(Number(settings.seed))) : "";
+        settings.stream = settings.stream !== false;
+        settings.jsonMode = settings.jsonMode === true;
+        if (!["default", "low", "medium", "high"].includes(settings.reasoningEffort)) {
+          settings.reasoningEffort = "default";
+        }
+        return settings;
+      } catch {
+        return defaultSettings(provider);
+      }
+    }
+
+    function getActiveSettings() {
+      return settingsByProvider[getProvider()];
+    }
+
+    function saveActiveSettings() {
+      localStorage.setItem(`generation_settings_${getProvider()}`, JSON.stringify(getActiveSettings()));
+      updateModelLabel();
+      updateReasoningVisibility();
+    }
+
+    function getModelId(settings = getActiveSettings(), provider = getProvider()) {
+      return settings.model === "__custom__"
+        ? settings.customModel.trim()
+        : settings.model || DEFAULT_MODELS[provider];
+    }
+
+    function populateModelOptions(provider, settings) {
+      modelSelect.replaceChildren();
+      for (const model of MODEL_OPTIONS[provider]) {
+        const option = document.createElement("option");
+        option.value = model;
+        option.textContent = model;
+        modelSelect.appendChild(option);
+      }
+      const customOption = document.createElement("option");
+      customOption.value = "__custom__";
+      customOption.textContent = "Custom model ID";
+      modelSelect.appendChild(customOption);
+
+      const isListedModel = MODEL_OPTIONS[provider].includes(settings.model);
+      if (!isListedModel && settings.model && settings.model !== "__custom__") {
+        settings.customModel = settings.model;
+        settings.model = "__custom__";
+      }
+      modelSelect.value = isListedModel ? settings.model : "__custom__";
+      customModelInput.value = settings.customModel || "";
+      customModelInput.hidden = modelSelect.value !== "__custom__";
+    }
+
+    function updateModelLabel() {
+      const settings = getActiveSettings();
+      activeModelLabel.textContent = getModelId(settings) || "Enter custom model ID";
+    }
+
+    function updateReasoningVisibility() {
+      const settings = getActiveSettings();
+      const showReasoning = getProvider() === "groq" && /gpt-oss|qwen3|deepseek-r1/i.test(getModelId(settings));
+      reasoningControl.hidden = !showReasoning;
+    }
+
+    function renderProviderSettings() {
+      const provider = getProvider();
+      const settings = settingsByProvider[provider];
+      populateModelOptions(provider, settings);
+      systemPromptInput.value = settings.systemPrompt;
+      temperatureRange.value = String(settings.temperature);
+      temperatureNumber.value = String(settings.temperature);
+      document.getElementById("temperatureValue").textContent = settings.temperature.toFixed(2);
+      maxTokensRange.value = String(settings.maxTokens);
+      maxTokensNumber.value = String(settings.maxTokens);
+      document.getElementById("maxTokensValue").textContent = String(settings.maxTokens);
+      topPRange.value = String(settings.topP);
+      document.getElementById("topPDisplay").textContent = settings.topP.toFixed(2);
+      stopSequencesInput.value = settings.stopSequences;
+      seedInput.value = settings.seed;
+      streamToggle.checked = settings.stream;
+      jsonToggle.checked = settings.jsonMode;
+      reasoningSelect.value = settings.reasoningEffort;
+      updateModelLabel();
+      updateReasoningVisibility();
+    }
+
+    function bindNumberPair(rangeInput, numberInput, key, min, max, outputId, decimals = 0) {
+      const applyValue = (source) => {
+        if (source.value === "" || !Number.isFinite(Number(source.value))) return;
+        const value = Math.min(max, Math.max(min, Number(source.value)));
+        const normalized = decimals === 0 ? Math.round(value) : Number(value.toFixed(decimals));
+        getActiveSettings()[key] = normalized;
+        rangeInput.value = String(normalized);
+        numberInput.value = String(normalized);
+        document.getElementById(outputId).textContent = decimals ? normalized.toFixed(decimals) : String(normalized);
+        saveActiveSettings();
+      };
+      rangeInput.addEventListener("input", () => applyValue(rangeInput));
+      numberInput.addEventListener("input", () => applyValue(numberInput));
+      numberInput.addEventListener("change", () => {
+        if (numberInput.value === "") numberInput.value = String(getActiveSettings()[key]);
+        else applyValue(numberInput);
+      });
+    }
+
+    function bindParameterControls() {
+      modelSelect.addEventListener("change", () => {
+        const settings = getActiveSettings();
+        settings.model = modelSelect.value;
+        customModelInput.hidden = settings.model !== "__custom__";
+        if (!customModelInput.hidden) customModelInput.focus();
+        saveActiveSettings();
+      });
+      customModelInput.addEventListener("input", () => {
+        getActiveSettings().customModel = customModelInput.value;
+        saveActiveSettings();
+      });
+      systemPromptInput.addEventListener("input", () => {
+        getActiveSettings().systemPrompt = systemPromptInput.value;
+        saveActiveSettings();
+      });
+      stopSequencesInput.addEventListener("input", () => {
+        getActiveSettings().stopSequences = stopSequencesInput.value;
+        saveActiveSettings();
+      });
+      seedInput.addEventListener("input", () => {
+        if (seedInput.value === "") {
+          getActiveSettings().seed = "";
+        } else if (Number.isSafeInteger(Number(seedInput.value))) {
+          getActiveSettings().seed = String(Math.trunc(Number(seedInput.value)));
+        } else {
+          return;
+        }
+        saveActiveSettings();
+      });
+      streamToggle.addEventListener("change", () => {
+        getActiveSettings().stream = streamToggle.checked;
+        saveActiveSettings();
+      });
+      jsonToggle.addEventListener("change", () => {
+        getActiveSettings().jsonMode = jsonToggle.checked;
+        saveActiveSettings();
+      });
+      reasoningSelect.addEventListener("change", () => {
+        getActiveSettings().reasoningEffort = reasoningSelect.value;
+        saveActiveSettings();
+      });
+      topPRange.addEventListener("input", () => {
+        const value = Number(topPRange.value);
+        getActiveSettings().topP = value;
+        document.getElementById("topPDisplay").textContent = value.toFixed(2);
+        saveActiveSettings();
+      });
+      document.getElementById("resetParameters").addEventListener("click", () => {
+        const provider = getProvider();
+        settingsByProvider[provider] = defaultSettings(provider);
+        saveActiveSettings();
+        renderProviderSettings();
+      });
+      bindNumberPair(temperatureRange, temperatureNumber, "temperature", 0, 2, "temperatureValue", 2);
+      bindNumberPair(maxTokensRange, maxTokensNumber, "maxTokens", 1, 8192, "maxTokensValue");
+      document.getElementById("resetSessionStats").addEventListener("click", () => {
+        if (isWaiting) return;
+        sessionStats.requests = 0;
+        sessionStats.latencyMs = 0;
+        sessionStats.latencySamples = 0;
+        sessionStats.speed = 0;
+        sessionStats.speedSamples = 0;
+        sessionStats.tokens = 0;
+        updateSessionStats();
+      });
+      document.getElementById("collapseParameters").addEventListener("click", () => {
+        if (window.matchMedia("(max-width: 760px)").matches) {
+          closeParametersDrawer();
+        } else {
+          mainGrid.classList.add("parameters-collapsed");
+          updateCollapseButton(true);
+          document.getElementById("expandParameters").focus();
+        }
+      });
+      document.getElementById("expandParameters").addEventListener("click", () => {
+        mainGrid.classList.remove("parameters-collapsed");
+        updateCollapseButton(false);
+        document.getElementById("collapseParameters").focus();
+      });
+      parametersToggle.addEventListener("click", () => {
+        const open = parametersPanel.classList.toggle("mobile-open");
+        parametersToggle.setAttribute("aria-expanded", String(open));
+        parametersToggle.setAttribute("aria-label", open ? "Close parameters" : "Open parameters");
+        updateParameterPanelAccess();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && parametersPanel.classList.contains("mobile-open")) closeParametersDrawer();
+      });
+      window.addEventListener("resize", () => {
+        if (window.matchMedia("(max-width: 760px)").matches) {
+          mainGrid.classList.remove("parameters-collapsed");
+          updateCollapseButton(false);
+        } else {
+          closeParametersDrawer();
+        }
+        updateParameterPanelAccess();
+      });
+    }
+
+    function closeParametersDrawer() {
+      const hadFocus = parametersPanel.contains(document.activeElement);
+      parametersPanel.classList.remove("mobile-open");
+      parametersToggle.setAttribute("aria-expanded", "false");
+      parametersToggle.setAttribute("aria-label", "Open parameters");
+      updateParameterPanelAccess();
+      if (hadFocus && window.matchMedia("(max-width: 760px)").matches) parametersToggle.focus();
+    }
+
+    function updateParameterPanelAccess() {
+      const mobile = window.matchMedia("(max-width: 760px)").matches;
+      const hidden = (mobile && !parametersPanel.classList.contains("mobile-open")) ||
+        (!mobile && mainGrid.classList.contains("parameters-collapsed"));
+      parametersPanel.inert = hidden;
+      parametersPanel.setAttribute("aria-hidden", String(hidden));
+    }
+
+    function updateCollapseButton(collapsed) {
+      const collapseButton = document.getElementById("collapseParameters");
+      const expandButton = document.getElementById("expandParameters");
+      collapseButton.hidden = collapsed;
+      expandButton.hidden = !collapsed;
+      collapseButton.setAttribute("aria-expanded", String(!collapsed));
+      expandButton.setAttribute("aria-expanded", String(!collapsed));
+      updateParameterPanelAccess();
+    }
+
+    function scrollToLatest() {
+      requestAnimationFrame(() => {
+        messageList.scrollTop = messageList.scrollHeight;
+      });
+    }
+
+    function renderMessage(container, text) {
+      container.replaceChildren();
+      const source = String(text);
+      const pattern = /```(?:[^\n]*\n)?([\s\S]*?)```/g;
+      let lastIndex = 0;
+      let match;
+
+      while ((match = pattern.exec(source)) !== null) {
+        const before = source.slice(lastIndex, match.index);
+        if (before) {
+          const paragraph = document.createElement("p");
+          paragraph.textContent = before;
+          container.appendChild(paragraph);
+        }
+
+        const pre = document.createElement("pre");
+        const code = document.createElement("code");
+        code.textContent = match[1];
+        pre.appendChild(code);
+        container.appendChild(pre);
+        lastIndex = pattern.lastIndex;
+      }
+
+      const remaining = source.slice(lastIndex);
+      if (remaining) {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = remaining;
+        container.appendChild(paragraph);
+      }
+    }
+
+    function addMessage(role, text, isError = false) {
+      if (role === "bot") return createBotMessage(text).row;
+      const row = document.createElement("div");
+      row.className = `message-row ${role}${isError ? " error" : ""}`;
+
+      const speaker = document.createElement("div");
+      speaker.className = "speaker";
+      speaker.textContent = role === "user" ? "you >" : isError ? "system >" : "model >";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      renderMessage(bubble, text);
+
+      row.appendChild(speaker);
+      row.appendChild(bubble);
+      messageList.appendChild(row);
+      scrollToLatest();
+      return row;
+    }
+
+    function createBotMessage(text, metadata = {}, canRegenerate = false) {
+      let currentText = String(text);
+      const row = document.createElement("div");
+      row.className = "message-row bot";
+
+      const meta = document.createElement("div");
+      meta.className = "bot-meta";
+      const badge = document.createElement("span");
+      badge.className = "model-badge";
+      badge.textContent = metadata.model
+        ? `${metadata.model} · temp ${Number(metadata.temperature ?? 1).toFixed(2)}`
+        : "";
+      meta.appendChild(badge);
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      renderMessage(bubble, currentText);
+
+      const statsLine = document.createElement("div");
+      statsLine.className = "bot-stats";
+      statsLine.setAttribute("aria-live", "off");
+      if (metadata.stats) statsLine.textContent = formatReplyStats(metadata.stats);
+
+      const actions = document.createElement("div");
+      actions.className = "bot-actions";
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.textContent = "Copy";
+      copyButton.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(currentText);
+          copyButton.textContent = "Copied";
+        } catch {
+          copyButton.textContent = "Copy unavailable";
+        }
+      });
+      actions.appendChild(copyButton);
+
+      if (canRegenerate) {
+        const regenerateButton = document.createElement("button");
+        regenerateButton.type = "button";
+        regenerateButton.textContent = "Regenerate";
+        regenerateButton.addEventListener("click", regenerateLastResponse);
+        actions.appendChild(regenerateButton);
+      }
+
+      row.append(meta, bubble, statsLine, actions);
+      messageList.appendChild(row);
+      scrollToLatest();
+
+      return {
+        row,
+        setText(value) {
+          currentText = String(value);
+          renderMessage(bubble, currentText);
+          scrollToLatest();
+        },
+        setStats(stats) {
+          statsLine.textContent = formatReplyStats(stats);
+          scrollToLatest();
+        }
+      };
+    }
+
+    function formatReplyStats(stats) {
+      const pieces = [
+        `⏱ ${(stats.totalMs / 1000).toFixed(2)}s total`,
+        `⚡ ${stats.estimatedOutput ? "~" : ""}${Math.round(stats.tokensPerSecond)} tok/s`
+      ];
+      if (stats.firstTokenMs !== null && stats.firstTokenMs !== undefined) {
+        pieces.push(`▶ ${(stats.firstTokenMs / 1000).toFixed(2)}s to first token`);
+      }
+      pieces.push(
+        `in ${stats.estimatedInput ? "~" : ""}${stats.inputTokens} / out ${stats.estimatedOutput ? "~" : ""}${stats.outputTokens} tokens`
+      );
+      return pieces.join(" · ");
+    }
+
+    function updateSessionStats() {
+      document.getElementById("sessionRequests").textContent = String(sessionStats.requests);
+      document.getElementById("sessionLatency").textContent = sessionStats.latencySamples
+        ? `${(sessionStats.latencyMs / sessionStats.latencySamples / 1000).toFixed(2)}s`
+        : "—";
+      document.getElementById("sessionSpeed").textContent = sessionStats.speedSamples
+        ? `${Math.round(sessionStats.speed / sessionStats.speedSamples)} tok/s`
+        : "—";
+      document.getElementById("sessionTokens").textContent = String(sessionStats.tokens);
+    }
+
+    function addToSessionStats(stats) {
+      sessionStats.speed += stats.tokensPerSecond;
+      sessionStats.speedSamples += 1;
+      sessionStats.tokens += stats.inputTokens + stats.outputTokens;
+      updateSessionStats();
+    }
+
+    function renderHistory() {
+      messageList.replaceChildren();
+      if (history.length === 0) {
+        renderWelcome();
+        return;
+      }
+      let lastBotIndex = -1;
+      history.forEach((item, index) => {
+        if (item.role === "assistant") lastBotIndex = index;
+      });
+      history.forEach((item, index) => {
+        if (item.role === "user") addMessage("user", item.text);
+        else if (item.role === "assistant") createBotMessage(item.text, item, index === lastBotIndex);
+      });
+      scrollToLatest();
+    }
+
+    function showTyping() {
+      typingIndicator = document.createElement("div");
+      typingIndicator.className = "typing";
+      typingIndicator.setAttribute("role", "status");
+      typingIndicator.innerHTML = '<span class="typing-cursor" aria-hidden="true"></span><span>thinking...</span>';
+      messageList.appendChild(typingIndicator);
+      scrollToLatest();
+    }
+
+    function hideTyping() {
+      if (typingIndicator) {
+        typingIndicator.remove();
+        typingIndicator = null;
+      }
+    }
+
+    // Build provider-specific payloads from the shared assistant/user transcript.
+    function buildProviderRequest(provider, conversation, settings, modelId, apiKey) {
+      const stop = settings.stopSequences.split(",").map((sequence) => sequence.trim()).filter(Boolean);
+      const seed = settings.seed === "" ? undefined : Number(settings.seed);
+      if (seed !== undefined && !Number.isSafeInteger(seed)) throw new Error("BAD_PARAMETER:Seed must be an integer.");
+      const stream = Boolean(settings.stream);
+
+      if (provider === "gemini") {
+        const generationConfig = {
+          temperature: settings.temperature,
+          maxOutputTokens: settings.maxTokens,
+          topP: settings.topP
+        };
+        if (stop.length) generationConfig.stopSequences = stop;
+        if (seed !== undefined) generationConfig.seed = seed;
+        if (settings.jsonMode) generationConfig.responseMimeType = "application/json";
+        const body = {
+          contents: conversation.map((item) => ({
+            role: item.role === "assistant" ? "model" : "user",
+            parts: [{ text: item.text }]
+          })),
+          generationConfig
+        };
+        if (settings.systemPrompt.trim()) {
+          body.systemInstruction = { parts: [{ text: settings.systemPrompt }] };
+        }
+        return {
+          url: `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:${stream ? "streamGenerateContent?alt=sse" : "generateContent"}`,
+          headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+          body,
+          stream
+        };
+      }
+
+      const messages = [];
+      if (settings.systemPrompt.trim()) messages.push({ role: "system", content: settings.systemPrompt });
+      messages.push(...conversation.map((item) => ({ role: item.role, content: item.text })));
+      const body = {
+        model: modelId,
+        messages,
+        temperature: settings.temperature,
+        max_completion_tokens: settings.maxTokens,
+        top_p: settings.topP,
+        stream
+      };
+      if (stop.length) body.stop = stop;
+      if (seed !== undefined) body.seed = seed;
+      if (settings.jsonMode) body.response_format = { type: "json_object" };
+      if (stream) body.stream_options = { include_usage: true };
+      if (provider === "groq") {
+        if (settings.reasoningEffort !== "default" && /gpt-oss|qwen3|deepseek-r1/i.test(modelId)) {
+          body.reasoning_effort = settings.reasoningEffort;
+        }
+        return {
+          url: GROQ_ENDPOINT,
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+          body,
+          stream
+        };
+      }
+      return {
+        url: OPENAI_ENDPOINT,
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+        body,
+        stream
+      };
+    }
+
+    function extractText(data, provider) {
+      if (provider === "gemini") {
+        return data.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("") || "";
+      }
+      const content = data.choices?.[0]?.message?.content;
+      if (typeof content === "string") return content;
+      if (Array.isArray(content)) return content.map((part) => part.text || "").join("");
+      return "";
+    }
+
+    function extractUsage(data, provider) {
+      if (provider === "gemini") return data.usageMetadata || null;
+      return data.x_groq?.usage || data.usage || null;
+    }
+
+    function appendStreamChunk(chunk, provider, progress, onProgress) {
+      let text = "";
+      if (provider === "gemini") {
+        text = chunk.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("") || "";
+        if (chunk.usageMetadata) progress.usage = chunk.usageMetadata;
+      } else {
+        const delta = chunk.choices?.[0]?.delta?.content;
+        if (typeof delta === "string") text = delta;
+        else if (Array.isArray(delta)) text = delta.map((part) => part.text || "").join("");
+        const usage = chunk.x_groq?.usage || chunk.usage;
+        if (usage) progress.usage = usage;
+      }
+      if (text) {
+        if (progress.firstTokenMs === null) progress.firstTokenMs = performance.now() - progress.startedAt;
+        progress.text += text;
+      }
+      progress.totalMs = performance.now() - progress.startedAt;
+      onProgress(progress);
+    }
+
+    // Parse SSE by complete lines so network chunks may split either a line or an event.
+    async function readEventStream(response, provider, progress, onProgress, signal) {
+      if (!response.body?.getReader) throw new Error("STREAM_UNAVAILABLE");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let dataLines = [];
+      const cancelReader = () => { reader.cancel().catch(() => {}); };
+      signal.addEventListener("abort", cancelReader, { once: true });
+
+      const dispatchEvent = () => {
+        if (!dataLines.length) return;
+        const payload = dataLines.join("\n");
+        dataLines = [];
+        if (payload === "[DONE]") return;
+        let chunk;
+        try {
+          chunk = JSON.parse(payload);
+        } catch {
+          throw new Error("STREAM_PARSE");
+        }
+        appendStreamChunk(chunk, provider, progress, onProgress);
+      };
+
+      const processLine = (line) => {
+        if (line.endsWith("\r")) line = line.slice(0, -1);
+        if (line === "") {
+          dispatchEvent();
+        } else if (line.startsWith("data:")) {
+          dataLines.push(line.slice(5).trimStart());
+        }
+      };
+
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+          let newlineIndex;
+          while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+            processLine(buffer.slice(0, newlineIndex));
+            buffer = buffer.slice(newlineIndex + 1);
+          }
+          if (done) {
+            if (buffer) processLine(buffer);
+            dispatchEvent();
+            break;
+          }
+        }
+      } catch (error) {
+        if (!signal.aborted) throw error;
+        progress.aborted = true;
+      } finally {
+        signal.removeEventListener("abort", cancelReader);
+        reader.releaseLock();
+      }
+      if (signal.aborted) progress.aborted = true;
+      progress.totalMs = performance.now() - progress.startedAt;
+      return progress;
+    }
+
+    function throwProviderError(response, data, provider, apiKey) {
+      const apiError = data?.error || {};
+      const apiMessage = String(apiError.message || "");
+      const apiCode = String(apiError.code || apiError.type || "");
+      const safeMessage = apiMessage.split(apiKey).join("[redacted]");
+      const retryAfter = response.headers?.get("Retry-After");
+      const retrySuffix = retryAfter ? ` Retry-After: ${retryAfter}.` : "";
+      if (response.status === 429) {
+        const isOpenAIQuotaError = provider === "openai" &&
+          /insufficient_quota|credit.balance|billing|spend.limit|quota|usage limit/i.test(`${apiCode} ${apiMessage}`);
+        if (isOpenAIQuotaError) {
+          throw new Error(safeMessage
+            ? `OPENAI_QUOTA:${safeMessage}${retrySuffix}`
+            : `OPENAI_QUOTA:${retrySuffix.trim()}`);
+        }
+        throw new Error(`RATE_LIMIT:${safeMessage}${retrySuffix}`);
+      }
+      const isGeminiBillingRestriction = provider === "gemini" &&
+        /free tier.*not available|project.*unavailable|billing/i.test(apiMessage);
+      if (isGeminiBillingRestriction) throw new Error(`GEMINI_BILLING:${safeMessage}`);
+      const invalidKeyMessage = /invalid.*(api[\s_-]?key|credential)|(?:api[\s_-]?key|credential).*(invalid|not valid)/i.test(apiMessage);
+      if (response.status === 401 || invalidKeyMessage) {
+        throw new Error(safeMessage ? `INVALID_KEY:${safeMessage}` : "INVALID_KEY");
+      }
+      throw new Error(safeMessage ? `API_ERROR:${safeMessage}` : `API_ERROR:HTTP ${response.status}`);
+    }
+
+    async function getBotResponse(conversation, options) {
+      const { provider, settings, modelId, signal, progress, onProgress } = options;
+      const apiKey = getSavedKey(provider);
+      if (!apiKey) throw new Error("NO_KEY");
+      const request = buildProviderRequest(provider, conversation, settings, modelId, apiKey);
+
+      try {
+        const response = await fetch(request.url, {
+          method: "POST",
+          headers: request.headers,
+          body: JSON.stringify(request.body),
+          signal
+        });
+        if (!response.ok) {
+          let data = {};
+          try { data = await response.json(); } catch {}
+          throwProviderError(response, data, provider, apiKey);
+        }
+        if (request.stream) {
+          await readEventStream(response, provider, progress, onProgress, signal);
+          return { text: progress.text, usage: progress.usage, aborted: Boolean(progress.aborted) };
+        }
+
+        const responseText = await response.text();
+        progress.totalMs = performance.now() - progress.startedAt;
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error("RESPONSE_PARSE");
+        }
+        progress.text = extractText(data, provider);
+        progress.usage = extractUsage(data, provider);
+        if (!progress.text) throw new Error("NO_CANDIDATE");
+        return { text: progress.text, usage: progress.usage, aborted: false };
+      } catch (error) {
+        if (signal.aborted || error?.name === "AbortError") {
+          progress.aborted = true;
+          progress.totalMs = performance.now() - progress.startedAt;
+          return { text: progress.text, usage: progress.usage, aborted: true };
+        }
+        if (error instanceof TypeError) throw new Error("NETWORK");
+        throw error;
+      }
+    }
+
+    function makeReplyStats(progress, conversation, settings, provider) {
+      const usage = progress.usage || {};
+      const inputRaw = provider === "gemini" ? usage.promptTokenCount : usage.prompt_tokens;
+      const outputRaw = provider === "gemini" ? usage.candidatesTokenCount : usage.completion_tokens;
+      const inputKnown = Number.isFinite(Number(inputRaw)) && inputRaw !== undefined && inputRaw !== null;
+      const outputKnown = Number.isFinite(Number(outputRaw)) && outputRaw !== undefined && outputRaw !== null;
+      const promptCharacters = conversation.reduce((count, item) => count + item.text.length, settings.systemPrompt.length);
+      const inputTokens = inputKnown ? Number(inputRaw) : Math.ceil(promptCharacters / 4);
+      const outputTokens = outputKnown ? Number(outputRaw) : Math.ceil(progress.text.length / 4);
+      const totalMs = Math.max(1, progress.totalMs);
+      const completionTime = provider === "groq" ? Number(usage.completion_time) : Number.NaN;
+      const rateDuration = Number.isFinite(completionTime) && completionTime > 0 ? completionTime * 1000 : totalMs;
+      return {
+        totalMs,
+        firstTokenMs: settings.stream ? progress.firstTokenMs : null,
+        inputTokens,
+        outputTokens,
+        estimatedInput: !inputKnown,
+        estimatedOutput: !outputKnown,
+        tokensPerSecond: outputTokens / (rateDuration / 1000)
+      };
+    }
+
+    function friendlyError(error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message === "NO_KEY") return "API key missing. Open Settings and save a key.";
+      if (message === "NETWORK") return "Network error. Check your connection and try again.";
+      if (message.startsWith("OPENAI_QUOTA:")) {
+        return `OpenAI accepted the key, but account/project quota, credits, or a spending limit blocked the request. Check OpenAI API billing and project limits. ${message.slice("OPENAI_QUOTA:".length)}`;
+      }
+      if (message.startsWith("GEMINI_BILLING:")) {
+        return `Google reports a Gemini project billing restriction. Enable billing or use a key from an eligible project. ${message.slice("GEMINI_BILLING:".length)}`;
+      }
+      if (message.startsWith("RATE_LIMIT:")) return `Provider rate limit or quota reached. ${message.slice("RATE_LIMIT:".length)}`;
+      if (message === "NO_CANDIDATE") return "The provider returned no response. Please try again.";
+      if (message === "STREAM_UNAVAILABLE") return "Streaming is unavailable for this response. Turn Stream off and retry.";
+      if (message === "STREAM_PARSE") return "The provider returned an unreadable streaming chunk.";
+      if (message === "RESPONSE_PARSE") return "The provider returned invalid JSON.";
+      if (message.startsWith("BAD_PARAMETER:")) return message.slice("BAD_PARAMETER:".length);
+      if (message.startsWith("INVALID_KEY:")) return `The API key was rejected: ${message.slice("INVALID_KEY:".length)}`;
+      if (message === "INVALID_KEY") return "The API key was rejected. Check or replace it in Settings.";
+      if (message.startsWith("API_ERROR:")) return `Provider error: ${message.slice("API_ERROR:".length)}`;
+      return "The request failed. Please try again.";
+    }
+
+    function resetTextarea() {
+      messageInput.style.height = "auto";
+      messageInput.style.height = `${Math.min(messageInput.scrollHeight, 84)}px`;
+      sendButton.disabled = isWaiting || messageInput.value.trim().length === 0;
+      sendButton.hidden = isWaiting;
+      stopButton.hidden = !isWaiting;
+      document.getElementById("resetSessionStats").disabled = isWaiting;
+    }
+
+    async function sendMessage() {
+      if (isWaiting) return;
+      const text = messageInput.value.trim();
+      if (!text) return;
+      const provider = getProvider();
+      const settings = { ...getActiveSettings() };
+      const modelId = getModelId(settings, provider);
+      if (!getSavedKey(provider)) {
+        openKeyModal();
+        addMessage("error", "Send blocked: enter an API key before continuing.", true);
+        return;
+      }
+      if (!modelId) {
+        addMessage("error", "Enter a custom model ID before sending.", true);
+        customModelInput.focus();
+        return;
+      }
+
+      addMessage("user", text);
+      history.push({ role: "user", text });
+      chatSessions[activeWorkspace] = history.slice();
+      const requestHistory = history.slice();
+      const requestWorkspace = activeWorkspace;
+      messageInput.value = "";
+      resetTextarea();
+
+      isWaiting = true;
+      resetTextarea();
+      showTyping();
+      const controller = new AbortController();
+      activeRequestController = controller;
+      const startedAt = performance.now();
+      activeRequestStartedAt = startedAt;
+      sessionStats.requests += 1;
+      updateSessionStats();
+      const progress = {
+        text: "",
+        usage: null,
+        firstTokenMs: null,
+        totalMs: 0,
+        startedAt,
+        aborted: false
+      };
+      let liveBotMessage = null;
+      const onProgress = (state) => {
+        if (requestWorkspace !== activeWorkspace || !state.text) return;
+        hideTyping();
+        if (!liveBotMessage) liveBotMessage = createBotMessage("", { model: modelId, temperature: settings.temperature });
+        liveBotMessage.setText(state.text);
+        liveBotMessage.setStats(makeReplyStats(state, requestHistory, settings, provider));
+      };
+      const finishBotMessage = () => {
+        if (!progress.text) return;
+        progress.totalMs = performance.now() - startedAt;
+        const stats = makeReplyStats(progress, requestHistory, settings, provider);
+        const botEntry = {
+          role: "assistant",
+          text: progress.text,
+          provider,
+          model: modelId,
+          temperature: settings.temperature,
+          stats
+        };
+        history.push(botEntry);
+        chatSessions[requestWorkspace] = history.slice();
+        addToSessionStats(stats);
+        renderHistory();
+      };
+
+      try {
+        const result = await getBotResponse(requestHistory, {
+          provider,
+          settings,
+          modelId,
+          signal: controller.signal,
+          progress,
+          onProgress
+        });
+        if (activeRequestController !== controller) return;
+        if (result.text) progress.text = result.text;
+        progress.usage = result.usage || progress.usage;
+        if (progress.text) finishBotMessage();
+        else if (!result.aborted) throw new Error("NO_CANDIDATE");
+      } catch (error) {
+        if (activeRequestController !== controller) return;
+        progress.totalMs = performance.now() - startedAt;
+        if (progress.text) finishBotMessage();
+        if (!controller.signal.aborted) addMessage("error", friendlyError(error), true);
+      } finally {
+        if (activeRequestController === controller) {
+          activeRequestController = null;
+          hideTyping();
+          isWaiting = false;
+          stopButton.disabled = false;
+          stopButton.textContent = "■ Stop";
+          sessionStats.latencyMs += performance.now() - startedAt;
+          sessionStats.latencySamples += 1;
+          activeRequestStartedAt = 0;
+          updateSessionStats();
+          resetTextarea();
+          messageInput.focus();
+        }
+      }
+    }
+
+    function regenerateLastResponse() {
+      if (isWaiting) return;
+      const userIndex = history.map((item) => item.role).lastIndexOf("user");
+      if (userIndex < 0) return;
+      const text = history[userIndex].text;
+      history = history.slice(0, userIndex);
+      chatSessions[activeWorkspace] = history.slice();
+      renderHistory();
+      messageInput.value = text;
+      resetTextarea();
+      sendMessage();
+    }
+
+    function stopGeneration() {
+      if (!activeRequestController) return;
+      stopButton.disabled = true;
+      stopButton.textContent = "Stopping…";
+      activeRequestController.abort();
+    }
+
+    function cancelActiveRequest() {
+      if (!activeRequestController) return;
+      const controller = activeRequestController;
+      activeRequestController = null;
+      controller.abort();
+      if (activeRequestStartedAt) {
+        sessionStats.latencyMs += performance.now() - activeRequestStartedAt;
+        sessionStats.latencySamples += 1;
+        activeRequestStartedAt = 0;
+        updateSessionStats();
+      }
+      hideTyping();
+      isWaiting = false;
+      stopButton.disabled = false;
+      stopButton.textContent = "■ Stop";
+      resetTextarea();
+    }
+
+    function openKeyModal() {
+      providerSelect.value = getProvider();
+      updateProviderKeyField();
+      keyError.textContent = "";
+      if (typeof keyModal.showModal === "function") keyModal.showModal();
+      else keyModal.setAttribute("open", "");
+      apiKeyInput.focus();
+    }
+
+    function closeKeyModal() {
+      if (typeof keyModal.close === "function") keyModal.close();
+      else keyModal.removeAttribute("open");
+    }
+
+    document.getElementById("openSettings").addEventListener("click", openKeyModal);
+    providerIndicator.addEventListener("click", switchProvider);
+    providerSelect.addEventListener("change", updateProviderKeyField);
+
+    function updateProviderKeyField() {
+      const provider = providerSelect.value;
+      const labels = {
+        gemini: "GEMINI API KEY",
+        groq: "GROQ API KEY",
+        openai: "OPENAI API KEY"
+      };
+      const placeholders = {
+        gemini: "Paste Gemini API key",
+        groq: "Paste Groq API key",
+        openai: "Paste OpenAI API key"
+      };
+      apiKeyLabel.textContent = labels[provider];
+      apiKeyInput.placeholder = placeholders[provider];
+      apiKeyInput.value = getSavedKey(provider);
+    }
+
+    function updateProviderIndicator() {
+      const provider = getProvider();
+      const labels = { gemini: "Gemini", groq: "Groq", openai: "OpenAI" };
+      const label = labels[provider];
+      providerIndicator.textContent = label;
+      providerIndicator.setAttribute("aria-label", `Active provider: ${label}. Click to switch provider`);
+    }
+
+    function switchProvider() {
+      const providers = ["gemini", "groq", "openai"];
+      const currentIndex = providers.indexOf(getProvider());
+      const provider = providers[(currentIndex + 1) % providers.length];
+      localStorage.setItem("provider", provider);
+      providerSelect.value = provider;
+      updateProviderKeyField();
+      updateProviderIndicator();
+      renderProviderSettings();
+      if (!getSavedKey(provider)) openKeyModal();
+    }
+
+    document.getElementById("saveKey").addEventListener("click", () => {
+      const key = apiKeyInput.value.trim();
+      if (!key) {
+        keyError.textContent = "Enter a valid API key before saving.";
+        apiKeyInput.focus();
+        return;
+      }
+      const provider = providerSelect.value;
+      localStorage.setItem(`${provider}_api_key`, key);
+      localStorage.setItem("provider", provider);
+      keyError.textContent = "";
+      updateProviderIndicator();
+      renderProviderSettings();
+      closeKeyModal();
+      resetTextarea();
+      messageInput.focus();
+    });
+    document.getElementById("clearKey").addEventListener("click", () => {
+      providerToClear = providerSelect.value;
+      const providerName = { gemini: "Gemini", groq: "Groq", openai: "OpenAI" }[providerToClear];
+      document.getElementById("clearKeyProvider").textContent = providerName;
+      clearKeyModal.showModal();
+    });
+    document.getElementById("cancelClearKey").addEventListener("click", () => {
+      providerToClear = null;
+      clearKeyModal.close();
+    });
+    clearKeyModal.addEventListener("close", () => {
+      providerToClear = null;
+    });
+    document.getElementById("confirmClearKey").addEventListener("click", () => {
+      if (!providerToClear) return;
+      localStorage.removeItem(`${providerToClear}_api_key`);
+      if (providerToClear === providerSelect.value) apiKeyInput.value = "";
+      keyError.textContent = "API key removed.";
+      providerToClear = null;
+      clearKeyModal.close();
+      resetTextarea();
+    });
+
+    sendButton.addEventListener("click", sendMessage);
+    stopButton.addEventListener("click", stopGeneration);
+    messageInput.addEventListener("input", resetTextarea);
+    messageInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function renderWelcome() {
+      messageList.replaceChildren();
+      addMessage("bot", "terminal ready. ask anything.");
+    }
+
+    function clearChat() {
+      cancelActiveRequest();
+      history = [];
+      chatSessions[activeWorkspace] = [];
+      hideTyping();
+      isWaiting = false;
+      renderWelcome();
+      resetTextarea();
+    }
+
+    function clearAllChatHistory() {
+      cancelActiveRequest();
+      for (const workspace of Object.keys(chatSessions)) {
+        chatSessions[workspace] = [];
+      }
+      history = [];
+      hideTyping();
+      isWaiting = false;
+      activeWorkspace = "A";
+      document.querySelectorAll("[data-workspace]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.workspace === "A");
+        if (button.dataset.workspace === "A") button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+      renderWelcome();
+      resetTextarea();
+    }
+
+    document.getElementById("newChat").addEventListener("click", clearChat);
+    document.getElementById("clearChat").addEventListener("click", clearAllChatHistory);
+    document.querySelectorAll(".chat-entry").forEach((entry) => {
+      entry.addEventListener("click", () => {
+        document.querySelectorAll(".chat-entry").forEach((item) => item.classList.remove("active"));
+        entry.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("[data-workspace]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (isWaiting) return;
+        chatSessions[activeWorkspace] = history.slice();
+        activeWorkspace = button.dataset.workspace;
+        history = chatSessions[activeWorkspace].slice();
+
+        document.querySelectorAll("[data-workspace]").forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle("active", selected);
+          if (selected) item.setAttribute("aria-current", "page");
+          else item.removeAttribute("aria-current");
+        });
+
+        renderHistory();
+        resetTextarea();
+      });
+    });
+
+    sidebarToggle.addEventListener("click", () => {
+      const open = sidebar.classList.toggle("open");
+      sidebarToggle.setAttribute("aria-expanded", String(open));
+    });
+
+    const audio = document.getElementById("audio");
+    const musicToggle = document.getElementById("musicToggle");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const musicNote = document.getElementById("musicNote");
+    let musicPausedByUser = false;
+
+    const savedVolumeValue = localStorage.getItem("music_volume");
+    const savedVolume = savedVolumeValue === null ? Number.NaN : Number(savedVolumeValue);
+    if (Number.isFinite(savedVolume) && savedVolume >= 0 && savedVolume <= 1) {
+      volumeSlider.value = String(savedVolume);
+    }
+    audio.volume = Number(volumeSlider.value);
+
+    volumeSlider.addEventListener("input", () => {
+      audio.volume = Number(volumeSlider.value);
+      localStorage.setItem("music_volume", String(volumeSlider.value));
+    });
+
+    function updateMusicButton(playing) {
+      musicToggle.textContent = playing ? "Ⅱ" : "▶";
+      musicToggle.setAttribute("aria-label", playing ? "Pause music" : "Play music");
+      musicToggle.setAttribute("aria-pressed", String(playing));
+    }
+
+    function removeMusicResumeListeners() {
+      document.removeEventListener("pointerdown", resumeMusicAfterGesture);
+      document.removeEventListener("keydown", resumeMusicAfterGesture);
+    }
+
+    async function startMusic() {
+      if (musicPausedByUser || !audio.paused) return;
+      try {
+        await audio.play();
+        musicNote.classList.remove("show");
+      } catch (error) {
+        if (error?.name === "NotAllowedError") {
+          musicNote.textContent = "music starts after your first interaction";
+          musicNote.classList.add("show");
+        } else {
+          musicNote.textContent = "music file not found";
+          musicNote.classList.add("show");
+        }
+      }
+    }
+
+    function resumeMusicAfterGesture(event) {
+      if (event.target instanceof Element && event.target.closest("#musicToggle")) return;
+      removeMusicResumeListeners();
+      startMusic();
+    }
+
+    async function toggleMusic() {
+      if (audio.paused) {
+        musicPausedByUser = false;
+        removeMusicResumeListeners();
+        await startMusic();
+      } else {
+        musicPausedByUser = true;
+        removeMusicResumeListeners();
+        audio.pause();
+      }
+    }
+
+    musicToggle.addEventListener("click", toggleMusic);
+    audio.addEventListener("play", () => {
+      updateMusicButton(true);
+      removeMusicResumeListeners();
+      document.getElementById("visualizer").classList.add("playing");
+    });
+    audio.addEventListener("pause", () => {
+      updateMusicButton(false);
+      document.getElementById("visualizer").classList.remove("playing");
+    });
+    audio.addEventListener("error", () => {
+      musicNote.textContent = "music file not found";
+      musicNote.classList.add("show");
+    });
+
+    document.addEventListener("pointerdown", resumeMusicAfterGesture);
+    document.addEventListener("keydown", resumeMusicAfterGesture);
+    startMusic();
+
+    function updateClock() {
+      document.getElementById("clock").textContent = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    if (!localStorage.getItem("provider")) {
+      localStorage.setItem("provider", localStorage.getItem("chat_provider") === "groq" ? "groq" : "gemini");
+    }
+    localStorage.removeItem("chat_provider");
+    for (const provider of ["gemini", "groq", "openai"]) {
+      settingsByProvider[provider] = loadProviderSettings(provider);
+    }
+    bindParameterControls();
+    renderProviderSettings();
+    updateCollapseButton(mainGrid.classList.contains("parameters-collapsed"));
+    updateSessionStats();
+    providerSelect.value = getProvider();
+    updateProviderKeyField();
+    updateProviderIndicator();
+    clearChat();
+    if (!getSavedKey()) openKeyModal();
+    else messageInput.focus();
+  </script>
+</body>
+</html>

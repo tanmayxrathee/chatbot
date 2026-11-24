@@ -1,0 +1,1471 @@
+{
+ "start": "2026-11-24T07:32:51.646Z",
+ "round": 1,
+ "idle": 0,
+ "errors": 0,
+ "status": "fail",
+ "history": [
+  {
+   "at": "2026-11-24T07:33:57.621Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 38,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": "index.html",
+  "url": null,
+  "root": null,
+  "kind": "software",
+  "category": "AI chat terminal",
+  "primary": "Send message",
+  "rounds": 3,
+  "start": "2026-11-24T07:32:51.646Z",
+  "by": "gate.mjs --start"
+ },
+ "manual": true,
+ "roundKey": "b4020835b6ebff55:da39a3ee",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "b4020835b6ebff55",
+ "page": "index.html",
+ "found": {
+  "fails": [
+   {
+    "check": "hero-fill",
+    "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "msg": "the next section shows on the first screen: it starts at 765px on a 900px screen (the hero ends at 762px)",
+    "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-fill"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel \"Input Chat message ➤ Send\""
+    ]
+   },
+   {
+    "check": "flush",
+    "where": "aside#sidebar \"Library + New new chat python help arch \"",
+    "msg": "its last line sits 0px above the rule on top of section.panel.input-panel",
+    "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "flush"
+    ],
+    "wheres": [
+     "aside#sidebar \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "cut-text",
+    "where": "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\"",
+    "msg": "cut 8px at the top by the overflow of main#top > section.main-grid > section.panel.chat-panel",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "cut-text"
+    ],
+    "wheres": [
+     "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\""
+    ]
+   },
+   {
+    "check": "no-visual",
+    "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+    "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "no-visual"
+    ],
+    "wheres": [
+     "main#top > section.main-grid \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "button-styles",
+    "where": "(one screen)",
+    "msg": "3 button styles on one screen: soft, outline #dcebe1 (\"+ New\"); pill, outline #dcebe1 (\"⚙ key\"); soft, fill #e8321a, outline #e8321a (\"➤ Send\"); the odd one out: \"➤ Send\"",
+    "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "button-styles"
+    ],
+    "wheres": [
+     "(one screen)"
+    ]
+   },
+   {
+    "check": "button-styles",
+    "where": "(the page)",
+    "msg": "3 button styles on the page: pill, outline #dcebe1 x1 (\"⚙ key\"); soft, outline #dcebe1 x4 (\"+ New\"); soft, fill #e8321a, outline #e8321a x1 (\"➤ Send\")",
+    "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "button-styles"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "copy-headline",
+    "where": "(the page)",
+    "msg": "the page has no visible h1",
+    "fix": "put the category noun in the h1 (and who it is for, or where), in 2 to 8 words",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "copy-headline"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "div#clock \"13:02:58\"",
+    "msg": "a caption, label or muted line in #d8e8e0 on #0f8a78 reads 3.36:1 (needs 4.5:1); 11 like it, like \"A\", \"C\", \"D\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "div#clock \"13:02:58\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "aside#sidebar > span.panel-label \"Library\"",
+    "msg": "a caption, label or muted line in #8fb0a5 on #0d4a43 reads 4.29:1 (needs 4.5:1); 3 like it, like \"Chat\", \"Input\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "aside#sidebar > span.panel-label \"Library\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "button#newChat \"+ New\"",
+    "msg": "a caption, label or muted line in #f5d5b0 on #0f8a78 reads 3.05:1 (needs 4.5:1); 2 like it, like \"new chat\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "button#newChat \"+ New\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "aside#sidebar > nav.chat-list > button.chat-entry:nth-of-type(2) \"python help\"",
+    "msg": "a caption, label or muted line in #8fb0a5 on #0f8a78 reads 1.81:1 (needs 4.5:1); 6 like it, like \"arch setup\", \"project ideas\", \"config notes\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "aside#sidebar > nav.chat-list > button.chat-entry:nth-of-type(2) \"python help\""
+    ]
+   },
+   {
+    "check": "motion-layer",
+    "where": "html[data-motion]",
+    "msg": "the page marks <html data-motion> but motion.css is not loaded: buttons, links, cards and photos answer nothing on hover",
+    "fix": "link assets/motion/motion.css after cards.css and keep data-motion on <html> (both, or neither)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "motion-layer"
+    ],
+    "wheres": [
+     "html[data-motion]"
+    ]
+   },
+   {
+    "check": "empty-area",
+    "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+    "msg": "79% of the section is empty: 79% beside content that covers under half the container, in its 688px of rows (WARN over 35%, FAIL over 50%)",
+    "fix": "fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "empty-area"
+    ],
+    "wheres": [
+     "main#top > section.main-grid \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "field-label",
+    "where": "textarea#messageInput",
+    "msg": "a textarea[type=textarea] without a label you can see: its <label> is hidden",
+    "fix": "put a <label for> with the field's name above it (references/system.md, Forms); a placeholder is no label",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "field-label"
+    ],
+    "wheres": [
+     "textarea#messageInput"
+    ]
+   },
+   {
+    "check": "focus-visible",
+    "where": "input#apiKeyInput",
+    "msg": "Tab stop 3, input \"\": it shows no change when focused",
+    "fix": "keep the kit's ring (system.css :focus-visible, 2px in --action, there at once); a control that hides itself shows on focus",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "focus-visible"
+    ],
+    "wheres": [
+     "input#apiKeyInput"
+    ]
+   },
+   {
+    "check": "moment-none",
+    "where": "(the page)",
+    "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+    "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "moment-none"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+    "msg": "the hero ends at 64px on a 900px screen, 836px above the fold: it ends at the fold, 1px either way (SR-1)",
+    "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+    "msg": "834px of the next section shows on the first screen (from 66px on a 900px screen): nothing below the hero shows at load (SR-1)",
+    "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#top > section.main-grid \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "msg": "the section is 118px tall (0.1 screens), 782px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+    "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+     "main#top > section.main-grid \"Library + New new chat python help arch \"",
+     "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "aside#sidebar > span.panel-label \"Library\"",
+    "msg": "\"Library\" lies outside section 2 (-8 to 8px from its top; the section is 688px tall) (and 1 more like it: \"Input\") (SR-2)",
+    "fix": "fit the content above the section's bottom padding (--padb), or make it two screens (.g2) in two groups",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "aside#sidebar > span.panel-label \"Library\""
+    ]
+   },
+   {
+    "check": "section-air",
+    "where": "main#top > section.main-grid / main#top > section.panel.input-panel",
+    "msg": "14px of air between the content of these two sections: 128-480px (64-600px WARN) (SR-3)",
+    "fix": "keep 128-480px of air between the content of neighbouring sections (112-420px on a phone): the sections' padding (--padt, --padb)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-air"
+    ],
+    "wheres": [
+     "main#top > section.main-grid / main#top > section.panel.input-panel"
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "msg": "the screen at scroll 0px (stride 0) shows 126px of section 3 and the content of 3 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+    "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+     "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+     "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+    "msg": "the content of section 1 runs 10px from the left and 10px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+    "msg": "the content of section 2 runs 10px from the left and 10px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > section.main-grid \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "msg": "the content of section 3 runs 23px from the left and 23px from the right (read from its outermost blocks: no .wrap): the page's container starts at 10px; the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel \"Input Chat message ➤ Send\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "dialog#keyModal \"Enter API Key Your key is stored only in\"",
+    "msg": "a <dialog> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "dialog#keyModal \"Enter API Key Your key is stored only in\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > section.panel.input-panel > span.panel-label \"Input\"",
+    "msg": "1 text block starts on a left line at x 17, 7px from the container's left: text starts on the container's left, or on one split line (x 612, 732, 852) (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel > span.panel-label \"Input\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\"",
+    "msg": "a box over half the container wide runs 250-1430px, not on the container's lines at 10-1430px (SR-6)",
+    "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#top > section.panel.input-panel > div.input-shell \"Chat message\"",
+    "msg": "a box over half the container wide runs 23-1295px, not on the container's lines at 23-1417px (SR-6)",
+    "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#top > section.panel.input-panel > div.input-shell \"Chat message\""
+    ]
+   },
+   {
+    "check": "flush",
+    "where": "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini > gemini ready. ask anything\"",
+    "msg": "its last line sits 0px above the rule on top of section.panel.input-panel",
+    "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "flush"
+    ],
+    "wheres": [
+     "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini > gemini ready. ask anything\""
+    ]
+   },
+   {
+    "check": "cta",
+    "where": "main#top > section.main-grid",
+    "msg": "the hero has no button (the nav's does not count)",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "cta"
+    ],
+    "wheres": [
+     "main#top > section.main-grid"
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "main#top > header.status-bar > div.brand-pill \"Gemini Chat\"",
+    "msg": "a caption, label or muted line in #d8e8e0 on #0f8a78 reads 3.36:1 (needs 4.5:1); 5 like it, like \"≡\", \"⚙ key\", \"▶\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "main#top > header.status-bar > div.brand-pill \"Gemini Chat\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\"",
+    "msg": "a caption, label or muted line in #8fb0a5 on #0d4a43 reads 4.29:1 (needs 4.5:1); 2 like it, like \"Input\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "div#messageList > div.message-row.bot > div.speaker \"gemini >\"",
+    "msg": "a caption, label or muted line in #8fb0a5 on #0f8a78 reads 1.81:1 (needs 4.5:1)",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "div#messageList > div.message-row.bot > div.speaker \"gemini >\""
+    ]
+   },
+   {
+    "check": "nav",
+    "where": "button#openSettings \"⚙ key\"",
+    "msg": "\"⚙ key\" sits outside the nav bar main#top > header.status-bar > div.status-left (also at 768)",
+    "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+    "widths": [
+     896
+    ],
+    "from": "consistency",
+    "ids": [
+     "nav"
+    ],
+    "wheres": [
+     "button#openSettings \"⚙ key\""
+    ]
+   },
+   {
+    "check": "nav",
+    "where": "button#musicToggle \"▶\"",
+    "msg": "\"▶\" sits outside the nav bar main#top > header.status-bar > div.status-left (also at 768)",
+    "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+    "widths": [
+     896
+    ],
+    "from": "consistency",
+    "ids": [
+     "nav"
+    ],
+    "wheres": [
+     "button#musicToggle \"▶\""
+    ]
+   },
+   {
+    "check": "off-viewport",
+    "where": "main#top > section.main-grid > aside#sidebar \"Library + New new chat python help arch \"",
+    "msg": "at 320px wide it runs 229px past the screen's left edge (cut there: the page clips what runs past it)",
+    "fix": "keep it inside the screen at this width: let it shrink, wrap or stack",
+    "widths": [
+     320
+    ],
+    "from": "consistency",
+    "ids": [
+     "off-viewport"
+    ],
+    "wheres": [
+     "main#top > section.main-grid > aside#sidebar \"Library + New new chat python help arch \""
+    ]
+   },
+   {
+    "check": "container",
+    "where": "page",
+    "msg": "no .wrap",
+    "fix": "put the content in one .wrap",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "layout",
+    "ids": [
+     "container"
+    ],
+    "wheres": [
+     "page"
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "copy-buttons",
+    "where": "button#openSettings \"⚙ key\"",
+    "msg": "\"⚙ key\" does not start with a verb (book, buy, try, start, get, see...) (and 1 more like it: \"+ New\")",
+    "fix": "label buttons with a verb and what the visitor gets (\"Book a room\", \"Start free trial\")",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-actions",
+    "where": "(the page)",
+    "msg": "the main action \"Send message\" does not read word for word the same in the nav or hero and the closing section",
+    "fix": "few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "heading-scale",
+    "where": "(the page)",
+    "msg": "the page has no visible h1",
+    "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "label-centre",
+    "where": "button#newChat \"+ New\"",
+    "msg": "its label sits 134px off-centre (13px of room at the left, 147px at the right)",
+    "fix": "centre the label in its button, or fill the empty side with an icon",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "stranded-action",
+    "where": "button#openSettings \"⚙ key\"",
+    "msg": "stands 715px across from the nearest text of its block (\"gemini ready. ask anything.\")",
+    "fix": "put the button under or beside the text it belongs to",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "stranded-action",
+    "where": "button#clearChat \"Clear chat\"",
+    "msg": "stands 569px down from the nearest text of its block (\"gemini ready. ask anything.\")",
+    "fix": "put the button under or beside the text it belongs to",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "skip-link",
+    "where": "button#clearKey \"Clear key\"",
+    "msg": "the first Tab stop is \"Clear key\", not a skip link: a keyboard user tabs through the whole nav on every visit",
+    "fix": "add the starter's skip link as the header's first child: <a class=\"skip-link\" href=\"#top\">Skip to content</a>",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "share-meta",
+    "where": "head",
+    "msg": "the head lacks og:title, og:description, og:image, twitter:card, an icon: a shared link shows no picture or title of its own",
+    "fix": "copy the head block of starter.html: og tags, twitter:card, the icon and theme-color (references/system.md, Head)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#sidebarToggle \"≡\"",
+    "msg": "a 29x32px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#openSettings \"⚙ key\"",
+    "msg": "a 55x32px tap target (and 1 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "input#volumeSlider",
+    "msg": "a 151x32px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#newChat \"+ New\"",
+    "msg": "a 198x38px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "aside#sidebar > nav.chat-list > button.chat-entry.active \"new chat\"",
+    "msg": "a 198x36px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "aside#sidebar > nav.chat-list > button.chat-entry:nth-of-type(2) \"python help\"",
+    "msg": "a 198x36px tap target (and 3 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#clearChat \"Clear chat\"",
+    "msg": "a 198x38px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#clearKey \"Clear key\"",
+    "msg": "a 151x42px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "button#saveKey \"Save\"",
+    "msg": "a 151x42px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 53,
+   "layout": 13
+  }
+ },
+ "open": [
+  {
+   "check": "hero-fill",
+   "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+   "msg": "the next section shows on the first screen: it starts at 765px on a 900px screen (the hero ends at 762px)",
+   "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-fill"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel \"Input Chat message ➤ Send\""
+   ]
+  },
+  {
+   "check": "flush",
+   "where": "aside#sidebar \"Library + New new chat python help arch \"",
+   "msg": "its last line sits 0px above the rule on top of section.panel.input-panel",
+   "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "flush"
+   ],
+   "wheres": [
+    "aside#sidebar \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "cut-text",
+   "where": "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\"",
+   "msg": "cut 8px at the top by the overflow of main#top > section.main-grid > section.panel.chat-panel",
+   "fix": "give the text room: no overflow clipping a line, no line past its box",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "cut-text"
+   ],
+   "wheres": [
+    "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\""
+   ]
+  },
+  {
+   "check": "no-visual",
+   "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+   "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+   "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "no-visual"
+   ],
+   "wheres": [
+    "main#top > section.main-grid \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "button-styles",
+   "where": "(one screen)",
+   "msg": "3 button styles on one screen: soft, outline #dcebe1 (\"+ New\"); pill, outline #dcebe1 (\"⚙ key\"); soft, fill #e8321a, outline #e8321a (\"➤ Send\"); the odd one out: \"➤ Send\"",
+   "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "button-styles"
+   ],
+   "wheres": [
+    "(one screen)"
+   ]
+  },
+  {
+   "check": "button-styles",
+   "where": "(the page)",
+   "msg": "3 button styles on the page: pill, outline #dcebe1 x1 (\"⚙ key\"); soft, outline #dcebe1 x4 (\"+ New\"); soft, fill #e8321a, outline #e8321a x1 (\"➤ Send\")",
+   "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "button-styles"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "copy-headline",
+   "where": "(the page)",
+   "msg": "the page has no visible h1",
+   "fix": "put the category noun in the h1 (and who it is for, or where), in 2 to 8 words",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "copy-headline"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "div#clock \"13:02:58\"",
+   "msg": "a caption, label or muted line in #d8e8e0 on #0f8a78 reads 3.36:1 (needs 4.5:1); 11 like it, like \"A\", \"C\", \"D\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "div#clock \"13:02:58\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "aside#sidebar > span.panel-label \"Library\"",
+   "msg": "a caption, label or muted line in #8fb0a5 on #0d4a43 reads 4.29:1 (needs 4.5:1); 3 like it, like \"Chat\", \"Input\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "aside#sidebar > span.panel-label \"Library\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "button#newChat \"+ New\"",
+   "msg": "a caption, label or muted line in #f5d5b0 on #0f8a78 reads 3.05:1 (needs 4.5:1); 2 like it, like \"new chat\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "button#newChat \"+ New\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "aside#sidebar > nav.chat-list > button.chat-entry:nth-of-type(2) \"python help\"",
+   "msg": "a caption, label or muted line in #8fb0a5 on #0f8a78 reads 1.81:1 (needs 4.5:1); 6 like it, like \"arch setup\", \"project ideas\", \"config notes\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "aside#sidebar > nav.chat-list > button.chat-entry:nth-of-type(2) \"python help\""
+   ]
+  },
+  {
+   "check": "motion-layer",
+   "where": "html[data-motion]",
+   "msg": "the page marks <html data-motion> but motion.css is not loaded: buttons, links, cards and photos answer nothing on hover",
+   "fix": "link assets/motion/motion.css after cards.css and keep data-motion on <html> (both, or neither)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "motion-layer"
+   ],
+   "wheres": [
+    "html[data-motion]"
+   ]
+  },
+  {
+   "check": "empty-area",
+   "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+   "msg": "79% of the section is empty: 79% beside content that covers under half the container, in its 688px of rows (WARN over 35%, FAIL over 50%)",
+   "fix": "fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "empty-area"
+   ],
+   "wheres": [
+    "main#top > section.main-grid \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "field-label",
+   "where": "textarea#messageInput",
+   "msg": "a textarea[type=textarea] without a label you can see: its <label> is hidden",
+   "fix": "put a <label for> with the field's name above it (references/system.md, Forms); a placeholder is no label",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "field-label"
+   ],
+   "wheres": [
+    "textarea#messageInput"
+   ]
+  },
+  {
+   "check": "focus-visible",
+   "where": "input#apiKeyInput",
+   "msg": "Tab stop 3, input \"\": it shows no change when focused",
+   "fix": "keep the kit's ring (system.css :focus-visible, 2px in --action, there at once); a control that hides itself shows on focus",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "focus-visible"
+   ],
+   "wheres": [
+    "input#apiKeyInput"
+   ]
+  },
+  {
+   "check": "moment-none",
+   "where": "(the page)",
+   "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+   "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "moment-none"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+   "msg": "the hero ends at 64px on a 900px screen, 836px above the fold: it ends at the fold, 1px either way (SR-1)",
+   "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+   "msg": "834px of the next section shows on the first screen (from 66px on a 900px screen): nothing below the hero shows at load (SR-1)",
+   "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#top > section.main-grid \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+   "msg": "the section is 118px tall (0.1 screens), 782px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+   "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "main#top > section.main-grid \"Library + New new chat python help arch \"",
+    "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "aside#sidebar > span.panel-label \"Library\"",
+   "msg": "\"Library\" lies outside section 2 (-8 to 8px from its top; the section is 688px tall) (and 1 more like it: \"Input\") (SR-2)",
+   "fix": "fit the content above the section's bottom padding (--padb), or make it two screens (.g2) in two groups",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "aside#sidebar > span.panel-label \"Library\""
+   ]
+  },
+  {
+   "check": "section-air",
+   "where": "main#top > section.main-grid / main#top > section.panel.input-panel",
+   "msg": "14px of air between the content of these two sections: 128-480px (64-600px WARN) (SR-3)",
+   "fix": "keep 128-480px of air between the content of neighbouring sections (112-420px on a phone): the sections' padding (--padt, --padb)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-air"
+   ],
+   "wheres": [
+    "main#top > section.main-grid / main#top > section.panel.input-panel"
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+   "msg": "the screen at scroll 0px (stride 0) shows 126px of section 3 and the content of 3 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+   "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+    "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+    "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\"",
+   "msg": "the content of section 1 runs 10px from the left and 10px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > header.status-bar \"13:03:14 A B C D E Gemini Chat ≡ ⚙ key ▶\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > section.main-grid \"Library + New new chat python help arch \"",
+   "msg": "the content of section 2 runs 10px from the left and 10px from the right (read from its outermost blocks: no .wrap): the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > section.main-grid \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > section.panel.input-panel \"Input Chat message ➤ Send\"",
+   "msg": "the content of section 3 runs 23px from the left and 23px from the right (read from its outermost blocks: no .wrap): the page's container starts at 10px; the margin is 64-120px at 1440px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel \"Input Chat message ➤ Send\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "dialog#keyModal \"Enter API Key Your key is stored only in\"",
+   "msg": "a <dialog> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "dialog#keyModal \"Enter API Key Your key is stored only in\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > section.panel.input-panel > span.panel-label \"Input\"",
+   "msg": "1 text block starts on a left line at x 17, 7px from the container's left: text starts on the container's left, or on one split line (x 612, 732, 852) (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel > span.panel-label \"Input\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\"",
+   "msg": "a box over half the container wide runs 250-1430px, not on the container's lines at 10-1430px (SR-6)",
+   "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini >gemini ready. ask anything.\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#top > section.panel.input-panel > div.input-shell \"Chat message\"",
+   "msg": "a box over half the container wide runs 23-1295px, not on the container's lines at 23-1417px (SR-6)",
+   "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#top > section.panel.input-panel > div.input-shell \"Chat message\""
+   ]
+  },
+  {
+   "check": "flush",
+   "where": "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini > gemini ready. ask anything\"",
+   "msg": "its last line sits 0px above the rule on top of section.panel.input-panel",
+   "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "flush"
+   ],
+   "wheres": [
+    "main#top > section.main-grid > section.panel.chat-panel \"Chat gemini > gemini ready. ask anything\""
+   ]
+  },
+  {
+   "check": "cta",
+   "where": "main#top > section.main-grid",
+   "msg": "the hero has no button (the nav's does not count)",
+   "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "cta"
+   ],
+   "wheres": [
+    "main#top > section.main-grid"
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "main#top > header.status-bar > div.brand-pill \"Gemini Chat\"",
+   "msg": "a caption, label or muted line in #d8e8e0 on #0f8a78 reads 3.36:1 (needs 4.5:1); 5 like it, like \"≡\", \"⚙ key\", \"▶\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "main#top > header.status-bar > div.brand-pill \"Gemini Chat\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\"",
+   "msg": "a caption, label or muted line in #8fb0a5 on #0d4a43 reads 4.29:1 (needs 4.5:1); 2 like it, like \"Input\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "main#top > section.main-grid > section.panel.chat-panel > span.panel-label \"Chat\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "div#messageList > div.message-row.bot > div.speaker \"gemini >\"",
+   "msg": "a caption, label or muted line in #8fb0a5 on #0f8a78 reads 1.81:1 (needs 4.5:1)",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "div#messageList > div.message-row.bot > div.speaker \"gemini >\""
+   ]
+  },
+  {
+   "check": "nav",
+   "where": "button#openSettings \"⚙ key\"",
+   "msg": "\"⚙ key\" sits outside the nav bar main#top > header.status-bar > div.status-left (also at 768)",
+   "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+   "widths": [
+    896
+   ],
+   "from": "consistency",
+   "ids": [
+    "nav"
+   ],
+   "wheres": [
+    "button#openSettings \"⚙ key\""
+   ]
+  },
+  {
+   "check": "nav",
+   "where": "button#musicToggle \"▶\"",
+   "msg": "\"▶\" sits outside the nav bar main#top > header.status-bar > div.status-left (also at 768)",
+   "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+   "widths": [
+    896
+   ],
+   "from": "consistency",
+   "ids": [
+    "nav"
+   ],
+   "wheres": [
+    "button#musicToggle \"▶\""
+   ]
+  },
+  {
+   "check": "off-viewport",
+   "where": "main#top > section.main-grid > aside#sidebar \"Library + New new chat python help arch \"",
+   "msg": "at 320px wide it runs 229px past the screen's left edge (cut there: the page clips what runs past it)",
+   "fix": "keep it inside the screen at this width: let it shrink, wrap or stack",
+   "widths": [
+    320
+   ],
+   "from": "consistency",
+   "ids": [
+    "off-viewport"
+   ],
+   "wheres": [
+    "main#top > section.main-grid > aside#sidebar \"Library + New new chat python help arch \""
+   ]
+  },
+  {
+   "check": "container",
+   "where": "page",
+   "msg": "no .wrap",
+   "fix": "put the content in one .wrap",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "layout",
+   "ids": [
+    "container"
+   ],
+   "wheres": [
+    "page"
+   ]
+  }
+ ],
+ "waived": [],
+ "warnCount": 17,
+ "at": "2026-11-24T07:33:57.622Z"
+}

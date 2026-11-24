@@ -1,0 +1,11 @@
+{
+ "page": "index.html",
+ "url": null,
+ "root": null,
+ "kind": "software",
+ "category": "AI chat terminal",
+ "primary": "Send message",
+ "rounds": 3,
+ "start": "2026-11-24T07:32:51.646Z",
+ "by": "gate.mjs --start"
+}
