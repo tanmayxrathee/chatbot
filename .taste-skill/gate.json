@@ -13,6 +13,62 @@
    "round": 1,
    "reused": false,
    "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T07:21:24.275Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T07:53:49.956Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T07:54:32.690Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T08:11:53.279Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T08:13:57.677Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-26T08:15:58.267Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-27T04:52:19.722Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "the build has been idle over 24 hours; stop allowed (gate.mjs --start re-arms it)",
+   "stopHookActive": false
   }
  ],
  "max": 3,
